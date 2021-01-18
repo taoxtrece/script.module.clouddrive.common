@@ -274,13 +274,12 @@ class ExportMainDialog(xbmcgui.WindowXMLDialog):
         
         self.update_library_sw = self.getControl(1007)
         self.download_artwork_sw = self.getControl(1008)
-        self.watch_drive_sw = self.getControl(1009)
         self.schedule_sw = self.getControl(1010)
         
         self.schedule_label = self.getControl(10100)
         self.schedule_list = self.getControl(1011)
         self.add_schedule_button = self.getControl(1012)
-        self.setFocus(self.dest_folder_button)
+        self.setFocus(self.save_export_button)
         
         self.schedule_label.setLabel(self._common_addon.getLocalizedString(32083))
         
@@ -295,7 +294,6 @@ class ExportMainDialog(xbmcgui.WindowXMLDialog):
         export = Utils.get_safe_value(exports, self.item_id, {})
         if export:
             self.editing = True
-            self.watch_drive_sw.setSelected(Utils.get_safe_value(export, 'watch', False))
             self.download_artwork_sw.setSelected(Utils.get_safe_value(export, 'download_artwork', False))
             self.schedule_sw.setSelected(Utils.get_safe_value(export, 'schedule', False))
             self.update_library_sw.setSelected(Utils.get_safe_value(export, 'update_library', False))
@@ -323,7 +321,6 @@ class ExportMainDialog(xbmcgui.WindowXMLDialog):
             'name': self.name,
             'content_type': self.content_type,
             'destination_folder': self.dest_folder_label.getLabel(),
-            'watch': self.watch_drive_sw.isSelected(),
             'download_artwork':self.download_artwork_sw.isSelected(),
             'schedule': self.schedule_sw.isSelected(),
             'update_library': self.update_library_sw.isSelected(),
@@ -402,7 +399,7 @@ class ExportMainDialog(xbmcgui.WindowXMLDialog):
             self.canceled = True
         elif action.getId() == xbmcgui.ACTION_CONTEXT_MENU:
             if self.getFocusId() == self.schedule_list.getId():
-                index = self._dialog.contextmenu(['Edit...', 'Delete'])
+                index = self._dialog.contextmenu(['Editar...', 'Eliminar'])
                 if index == 0:
                     self.edit_selected_schedule()
                 elif index == 1:

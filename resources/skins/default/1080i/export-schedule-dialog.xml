@@ -44,7 +44,7 @@
 			<top>0</top>
 			<width>730</width>
 			<height>70</height>
-			<texture colordiffuse="FF147A96" border="2">white.png</texture>
+			<texture colordiffuse="ff7b1fa2">Button/button-dialog.png</texture>
 		</control>
 		<!-- Title label -->
 		<control type="label" id="1000">
@@ -54,9 +54,9 @@
 			<width>730</width>
 			<height>70</height>
 			<font>font30_title</font>
+            <textcolor>FFF0F0F0</textcolor>
 			<align>left</align>
 			<aligny>center</aligny>
-			<shadowcolor>FF000000</shadowcolor>
 		</control>
 
 		<control type="group" id="1001">
@@ -76,6 +76,7 @@
 				<ondown>1010</ondown>
 				<onleft>1003</onleft>
 				<onright>1003</onright>
+                <texturefocus colordiffuse="ff7b1fa2">Button/button-view-base-fo.png</texturefocus>
 	        </control>
 	        <!-- Save button -->
 	        <control type="button" id="1003">
@@ -83,7 +84,7 @@
 	            <top>0</top>
 	            <width>250</width>
 	            <height>100</height>
-	            <label>Save</label>
+	            <label>Guardar</label>
 	            <align>center</align>
 	            <aligny>center</aligny>
 	            
@@ -91,6 +92,7 @@
 				<ondown>1010</ondown>
 				<onleft>1002</onleft>
 				<onright>1002</onright>
+                <texturefocus colordiffuse="ff7b1fa2">Button/button-view-base-fo.png</texturefocus>
 	        </control>
         </control>
         
@@ -102,7 +104,7 @@
 				<top>15</top>
 				<width>170</width>
 				<height>50</height>
-				<label>Every</label>
+				<label>Cada</label>
 				<textoffsetx>20</textoffsetx>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -119,6 +121,7 @@
 				<ondown>1001</ondown>
 				<onleft>1012</onleft>
 				<onright>1012</onright>
+                <texturefocus colordiffuse="ff7b1fa2">Button/button-view-base-fo.png</texturefocus>
 	        </control>
 			<control type="label" id="10100">
 				<textoffsetx>20</textoffsetx>
@@ -142,6 +145,7 @@
 				<ondown>1001</ondown>
 				<onleft>1011</onleft>
 				<onright>1011</onright>
+                <texturefocus colordiffuse="ff7b1fa2">Button/button-view-base-fo.png</texturefocus>
 	        </control>
         
         </control>

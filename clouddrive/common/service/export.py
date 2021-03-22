@@ -98,7 +98,6 @@ class ExportService(object):
                 export_map = self.get_scheduled_export_map()
                 if export_map:
                     self.process_schedules(export_map, now, startup)
-                self.process_watch()
             except Exception as e:
                 ErrorReport.handle_exception(e)
             startup = False
@@ -262,67 +261,6 @@ class ExportService(object):
                 if is_retry:
                     self.export_manager.save_retry_changes(exportid, deque(retry_changes))
         return changes_done
-    
-    def process_watch(self):
-        exports = self.export_manager.get_exports()
-        update_library = {}
-        changes_by_drive = {}
-        for exportid in exports:
-            export = exports[exportid]
-            watch = Utils.get_safe_value(export, 'watch', False)
-            exporting = Utils.get_safe_value(export, 'exporting', False)
-            retry_changes = self.export_manager.get_retry_changes(exportid)
-            if (watch or len(retry_changes) > 0) and not exporting:
-                items_info = self.export_manager.get_items_info(exportid)
-                if items_info:
-                    export['exporting'] = True
-                    export['origin'] = 'watch'
-                    self.export_manager.save_export(export)
-                    try:
-                        driveid = export['driveid']
-                        if driveid in changes_by_drive:
-                            changes = changes_by_drive[driveid]
-                        else:
-                            self.provider.configure(self._account_manager, export['driveid'])
-                            changes = self.provider.changes()
-                            changes_by_drive[driveid] = []
-                            changes_by_drive[driveid].extend(changes)
-                        pending_changes = self.export_manager.get_pending_changes(exportid)
-                        pending_changes.extend(retry_changes)
-                        pending_changes.extend(changes)
-                        if len(changes) > 0 or len(retry_changes) > 0:
-                            self.export_manager.save_pending_changes(exportid, pending_changes)
-                        if len(retry_changes) > 0:
-                            self.export_manager.save_retry_changes(exportid, deque([]))
-                        show_export_progress = KodiUtils.get_addon_setting('hide_export_progress') != 'true'
-                        if pending_changes and show_export_progress:
-                            self._export_progress_dialog_bg.update(0, self._addon_name + ' ' + self._common_addon.getLocalizedString(32088), self._common_addon.getLocalizedString(32025))
-                        if show_export_progress:
-                            progress_listener = self._show_progress_after_change
-                        else:
-                            progress_listener = None
-                        changes_done = self.process_pending_changes(exportid, on_after_change = progress_listener)
-                        if changes_done:
-                            if Utils.get_safe_value(export, 'update_library', False):
-                                update_library[Utils.get_safe_value(export, 'content_type', 'None')] = True
-                        for change in changes_done:
-                            if change in changes_by_drive[driveid]:
-                                changes_by_drive[driveid].remove(change)
-                    except Exception as e:
-                        ErrorReport.handle_exception(e)
-                        KodiUtils.show_notification(self._common_addon.getLocalizedString(32027) + ' ' + Utils.unicode(e))
-                    finally:
-                        export['exporting'] = False
-                        del export['origin']
-                        self.export_manager.save_export(export)
-                else:
-                    self.run_export(export)
-        self._export_progress_dialog_bg.close()
-        if update_library:
-            if Utils.get_safe_value(update_library, 'video', False):
-                KodiUtils.update_library('video')
-            if Utils.get_safe_value(update_library, 'audio', False):
-                KodiUtils.update_library('music')
     
     @timeit
     def process_change(self, change, items_info, export):
